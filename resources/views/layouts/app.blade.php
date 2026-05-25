@@ -23,20 +23,40 @@
         @if($layout === 'sidebar')
             <x-sidebar />
         @elseif($layout === 'navbar')
+            <x-sidebar layout="navbar" />
             <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
                 <flux:sidebar.toggle class="lg:hidden mr-2" icon="bars-2" inset="left" />
 
                 <x-app-logo href="{{ route('home') }}" wire:navigate />
 
-                @auth
-                    <flux:navbar class="-mb-px max-lg:hidden">
+                <flux:navbar class="-mb-px max-lg:hidden">
+                    @auth
                         <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                             {{ __('Dashboard') }}
                         </flux:navbar.item>
-                    </flux:navbar>
-                @endauth
+                    @endauth
+
+                    <flux:navbar.item icon="video-camera" :href="route('videos.create')" :current="request()->routeIs('videos.create')" wire:navigate>
+                        {{ __('Novo Vídeo') }}
+                    </flux:navbar.item>
+
+                    @if(request()->route('video'))
+                        <flux:navbar.item icon="document-text" :href="route('videos.transcript', request()->route('video'))" :current="request()->routeIs('videos.transcript')" wire:navigate>
+                            {{ __('Transcrição') }}
+                        </flux:navbar.item>
+
+                        <flux:navbar.item icon="scissors" :href="route('videos.editor', request()->route('video'))" :current="request()->routeIs('videos.editor')" wire:navigate>
+                            {{ __('Editor') }}
+                        </flux:navbar.item>
+                    @endif
+                </flux:navbar>
 
                 <flux:spacer />
+
+                <flux:button variant="subtle" square x-data x-on:click="$flux.appearance = $flux.appearance === 'dark' ? 'light' : 'dark'" class="cursor-pointer mr-2" aria-label="Toggle theme">
+                    <flux:icon.sun x-show="$flux.appearance === 'dark'" variant="outline" class="size-5" />
+                    <flux:icon.moon x-show="$flux.appearance === 'light' || $flux.appearance === 'system'" variant="outline" class="size-5" />
+                </flux:button>
 
                 @auth
                     <flux:dropdown position="bottom" align="start">

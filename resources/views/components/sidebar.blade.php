@@ -1,15 +1,31 @@
-<flux:sidebar sticky stashable class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
+@props(['layout' => 'sidebar'])
+
+<flux:sidebar sticky stashable class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 {{ $layout === 'navbar' ? 'lg:hidden' : '' }}">
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
     <x-app-logo href="{{ route('home') }}" class="px-2" wire:navigate />
 
-    @auth
-        <flux:navlist variant="grid">
+    <flux:navlist variant="grid">
+        @auth
             <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </flux:navlist.item>
-        </flux:navlist>
-    @endauth
+        @endauth
+
+        <flux:navlist.item icon="video-camera" :href="route('videos.create')" :current="request()->routeIs('videos.create')" wire:navigate>
+            {{ __('Novo Vídeo') }}
+        </flux:navlist.item>
+
+        @if(request()->route('video'))
+            <flux:navlist.item icon="document-text" :href="route('videos.transcript', request()->route('video'))" :current="request()->routeIs('videos.transcript')" wire:navigate>
+                {{ __('Transcrição') }}
+            </flux:navlist.item>
+
+            <flux:navlist.item icon="scissors" :href="route('videos.editor', request()->route('video'))" :current="request()->routeIs('videos.editor')" wire:navigate>
+                {{ __('Editor') }}
+            </flux:navlist.item>
+        @endif
+    </flux:navlist>
 
     <flux:spacer />
 

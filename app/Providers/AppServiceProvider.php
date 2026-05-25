@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\User;
+use App\Services\VideoProcessor\Contracts\VideoProcessorProviderInterface;
+use App\Services\VideoProcessor\Providers\HttpVideoProcessorProvider;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Date;
@@ -22,7 +24,8 @@ final class AppServiceProvider extends ServiceProvider
     #[Override]
     public function register(): void
     {
-        //
+        // Contrato -> implementação HTTP. Trocar o provider aqui (ex: fake nos testes).
+        $this->app->bind(VideoProcessorProviderInterface::class, HttpVideoProcessorProvider::class);
     }
 
     /**
